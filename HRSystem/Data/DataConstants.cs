@@ -14,7 +14,7 @@
         public const int HouseDescriptionMaxLength = 500;
 
         //Agent constants
-        public const int AgentPhoneNumberMinLength = 15;
-        public const int AgentPhoneNumberMaxLength = 7;
+        public const int AgentPhoneNumberMinLength = 7;
+        public const int AgentPhoneNumberMaxLength = 15;
     }
 }
