@@ -1,4 +1,5 @@
 ﻿using HRSystem.Models;
+using HRSystem.Models.Home;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,9 +7,12 @@ namespace HRSystem.Controllers
 {
     public class HomeController : Controller
     {
+        [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            var model = new IndexViewModel();
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
