@@ -24,6 +24,7 @@ namespace HRSystem.Controllers
         public IActionResult Details(int id)
         {
             var model = new HouseDetailsViewModel();
+
             return View(model);
         }
 

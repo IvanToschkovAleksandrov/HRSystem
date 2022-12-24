@@ -1,5 +1,6 @@
 ﻿using HRSystem.Models;
 using HRSystem.Models.Home;
+using HRSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,12 +8,19 @@ namespace HRSystem.Controllers
 {
     public class HomeController : Controller
     {
-        [HttpGet]
-        public IActionResult Index()
-        {
-            var model = new IndexViewModel();
+        private readonly IHouseService houseService;
 
-            return View(model);
+        public HomeController(IHouseService houseService)
+        {
+            this.houseService = houseService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var houses = await houseService.LastThreeHousesAsync();
+
+            return View(houses);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
