@@ -1,5 +1,6 @@
 using HRSystem.Data;
-using HRSystem.Services;
+using HRSystem.Services.Agents;
+using HRSystem.Services.Houses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IHouseService, HouseService>();
+builder.Services.AddScoped<IAgentService, AgentService>();
 
 var app = builder.Build();
 

@@ -1,6 +1,6 @@
 ﻿using HRSystem.Models;
 using HRSystem.Models.Home;
-using HRSystem.Services;
+using HRSystem.Services.Houses;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

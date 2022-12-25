@@ -1,6 +1,6 @@
 ﻿using HRSystem.Services.Models;
 
-namespace HRSystem.Services
+namespace HRSystem.Services.Houses
 {
     public interface IHouseService
     {

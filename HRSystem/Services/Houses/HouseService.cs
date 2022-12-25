@@ -2,7 +2,7 @@
 using HRSystem.Services.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace HRSystem.Services
+namespace HRSystem.Services.Houses
 {
     public class HouseService : IHouseService
     {
