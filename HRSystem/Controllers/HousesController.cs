@@ -1,4 +1,9 @@
-﻿using HRSystem.Models.Houses;
+﻿using HRSystem.Data.Models;
+using HRSystem.Infrastructure;
+using HRSystem.Models.Agents;
+using HRSystem.Models.Houses;
+using HRSystem.Services.Agents;
+using HRSystem.Services.Houses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +11,17 @@ namespace HRSystem.Controllers
 {
     public class HousesController : Controller
     {
+        private readonly IHouseService houseService;
+        private readonly IAgentService agentService;
+
+        public HousesController(
+            IHouseService houseService,
+            IAgentService agentService)
+        {
+            this.houseService = houseService;
+            this.agentService = agentService;
+        }
+
         public IActionResult All()
         {
             var model = new AllHousesQueryModel();
@@ -30,19 +46,54 @@ namespace HRSystem.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            return View();
+            if(!await agentService.ExistByIdAsync(User.Id()))
+            {
+                return RedirectToAction("Become", "Agents");
+            }
+
+            var model = new HouseFormModel()
+            {
+                Cagetories = await houseService.AllCategoriesAsync()
+            };
+
+            return View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult Add(HouseFormModel model)
+        public async Task<IActionResult> Add(HouseFormModel model)
         {
-            //Check ModelState
-            //Add new House to the Database
+            if (!await agentService.ExistByIdAsync(User.Id()))
+            {
+                return RedirectToAction("Become", "Agents");
+            }
+            
+            if (!await houseService.CategoryExistAsync(model.CategoryId))
+            {
+                ModelState.AddModelError(nameof(model.CategoryId), "Category does not exist.");
+            }
 
-            return RedirectToAction(nameof(Details), new { id = 1 });
+            if (!ModelState.IsValid)
+            {
+                model.Cagetories = await houseService.AllCategoriesAsync();
+
+                return View(model);
+            }
+
+            var agentId = await agentService.GetAgentIdAsync(this.User.Id());
+            int newHouseId = await houseService
+                .CreateAsync(
+                model.Title, 
+                model.Address, 
+                model.Description, 
+                model.ImageUrl,
+                model.PricePerMonth, 
+                model.CategoryId,
+                agentId);
+            
+            return RedirectToAction(nameof(Details), new { id = newHouseId });
         }
 
         [Authorize]

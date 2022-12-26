@@ -31,6 +31,14 @@ namespace HRSystem.Services.Agents
                 .AnyAsync(x => x.UserId == userId);
         }
 
+        public async Task<int> GetAgentIdAsync(string userId)
+        {
+            var agent = await context.Agents
+                .FirstOrDefaultAsync(a => a.UserId == userId);
+
+            return agent.Id;
+        }
+
         public async Task<bool> UserHasRentsAsync(string userId)
         {
             return await context.Houses
