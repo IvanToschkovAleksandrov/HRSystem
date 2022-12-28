@@ -16,6 +16,10 @@ namespace HRSystem.Services.Houses
         Task<IEnumerable<HouseCategoryServiceModel>> AllCategoriesAsync();
 
         Task<IEnumerable<string>> AllCategoriesNamesAsync();
+
+        Task<IEnumerable<HouseServiceModel>> AllHousesByUserIdAsync(string userId);
+
+        Task<IEnumerable<HouseServiceModel>> AllHousesByAgentId(int id);
         
         Task<bool> CategoryExistAsync(int id);
         

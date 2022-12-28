@@ -1,6 +1,7 @@
 ﻿using HRSystem.Data;
 using HRSystem.Data.Models;
 using HRSystem.Services.Models;
+using Microsoft.Build.Evaluation;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRSystem.Services.Houses
@@ -85,6 +86,38 @@ namespace HRSystem.Services.Houses
             return await context.Categories
                 .Select(c => c.Name)
                 .Distinct()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<HouseServiceModel>> AllHousesByAgentId(int id)
+        {
+            return await context.Houses
+                .Where(h => h.AgentId == id)
+                .Select(h => new HouseServiceModel()
+                {
+                    Id = h.Id,
+                    Address = h.Address,
+                    Title = h.Title,
+                    ImageUrl = h.ImageUrl,
+                    IsRented = h.RenterId != null,
+                    PricePerMonth = h.PricePerMonth
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<HouseServiceModel>> AllHousesByUserIdAsync(string userId)
+        {
+            return await context.Houses
+                .Where(h => h.RenterId == userId)
+                .Select(h => new HouseServiceModel()
+                {
+                    Id = h.Id,
+                    Address = h.Address,
+                    Title = h.Title,
+                    ImageUrl = h.ImageUrl,
+                    IsRented = h.RenterId != null,
+                    PricePerMonth = h.PricePerMonth
+                })
                 .ToListAsync();
         }
 

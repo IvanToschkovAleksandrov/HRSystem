@@ -4,6 +4,7 @@ using HRSystem.Models.Agents;
 using HRSystem.Models.Houses;
 using HRSystem.Services.Agents;
 using HRSystem.Services.Houses;
+using HRSystem.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -50,11 +51,22 @@ namespace HRSystem.Controllers
         }
 
         [Authorize]
-        public IActionResult Mine()
+        public async Task<IActionResult> Mine()
         {
-            var model = new AllHousesQueryModel();
+            IEnumerable<HouseServiceModel> myHouses = null;
+            var userId = User.Id();
 
-            return View(model);
+            if (await agentService.ExistByIdAsync(userId))
+            {
+                var agentId = await agentService.GetAgentIdAsync(userId);
+                myHouses = await houseService.AllHousesByAgentId(agentId);
+            }
+            else
+            {
+                myHouses = await houseService.AllHousesByUserIdAsync(userId);
+            }
+
+            return View(myHouses);
         }
 
         public IActionResult Details(int id)
