@@ -5,8 +5,20 @@ namespace HRSystem.Services.Houses
     public interface IHouseService
     {
         Task<IEnumerable<HouseIndexServiceModel>> LastThreeHousesAsync();
+
+        Task<HouseQueryServiceModel> AllAsync(
+            string? category = null,
+            string? serchTerm = null,
+            HouseSorting sorting = HouseSorting.Newest,
+            int currentPage = 1,
+            int housesPerPage = 1);
+
         Task<IEnumerable<HouseCategoryServiceModel>> AllCategoriesAsync();
+
+        Task<IEnumerable<string>> AllCategoriesNamesAsync();
+        
         Task<bool> CategoryExistAsync(int id);
+        
         Task<int> CreateAsync(
             string title,
             string address,

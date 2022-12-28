@@ -6,6 +6,7 @@ using HRSystem.Services.Agents;
 using HRSystem.Services.Houses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace HRSystem.Controllers
 {
@@ -22,11 +23,30 @@ namespace HRSystem.Controllers
             this.agentService = agentService;
         }
 
-        public IActionResult All()
-        {
-            var model = new AllHousesQueryModel();
+        //public IActionResult All()
+        //{
+        //    var model = new AllHousesQueryModel();
 
-            return View(model);
+        //    return View(model);
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> All([FromQuery] AllHousesQueryModel query)
+        {
+            var model = await houseService.AllAsync(
+                query.Category,
+                query.SearchTerm,
+                query.Sorting,
+                query.CurrentPage,
+                AllHousesQueryModel.HousesPerPage);
+
+            query.TotalHousesCount = model.TotalHousesCount;
+            query.Houses = model.Houses;
+
+            var houseCateogories = await houseService.AllCategoriesNamesAsync();
+            query.Categories = houseCateogories;
+
+            return View(query);
         }
 
         [Authorize]
