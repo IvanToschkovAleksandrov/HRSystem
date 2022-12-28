@@ -172,8 +172,25 @@ namespace HRSystem.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult Rent(int id)
+        public async Task<IActionResult> Rent(int id)
         {
+            if (!await houseService.ExistAsync(id))
+            {
+                return BadRequest();
+            }
+
+            if (await agentService.ExistByIdAsync(User.Id()))
+            {
+                return Unauthorized();
+            }
+
+            if (await houseService.IsRentedAsync(id))
+            {
+                return BadRequest();
+            }
+
+            await houseService.RentAsync(id, User.Id());
+
             return RedirectToAction(nameof(Mine));
         }
 

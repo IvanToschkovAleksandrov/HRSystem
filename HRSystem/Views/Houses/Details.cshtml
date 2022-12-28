@@ -26,17 +26,15 @@
                     <a class="ml-2 btn btn-danger" asp-controller="Houses" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
                     @if (!Model.IsRented)
                     {
-                        @*<form class="ml-2" asp-controller="Houses" asp-action="Rent" asp-route-id="@Model.Id" method="post">
-                            <input class="btn btn-primary" type="submit" value="Rent" />
-                        </form>*@
-                        <a class="ml-2 btn btn-primary" asp-controller="Houses" asp-action="Rent" asp-route-id="@Model.Id">Rent</a> 
+                                <form class="ml-2" style="display: inline" asp-controller="Houses" asp-action="Rent" asp-route-id="@Model.Id" method="post">
+                                    <input class="btn btn-primary" type="submit" value="Rent" />
+                                </form>
                     }
                     else
                     {
-                        @*<form class="ml-2" asp-controller="Houses" asp-action="Leave" asp-route-id="@Model.Id" method="post">
-                            <input class="btn btn-primary" type="submit" value="Leave" />
-                        </form>*@
-                        <a class="ml-2 btn btn-primary" asp-conroller="Houses" asp-action="Leave" asp-route-id="@Model.Id">Leave</a>
+                                <form class="ml-2" style="display: inline" asp-controller="Houses" asp-action="Leave" asp-route-id="@Model.Id" method="post">
+                                    <input class="btn btn-primary" type="submit" value="Leave" />
+                                </form>
                     }
                 }
             </div>

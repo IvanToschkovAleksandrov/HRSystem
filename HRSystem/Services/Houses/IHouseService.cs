@@ -35,5 +35,11 @@ namespace HRSystem.Services.Houses
         Task<bool> ExistAsync(int id);
 
         Task<HouseDetailsServiceModel> HouseDetailsByIdAsync(int id);
+
+        Task<bool> IsRentedAsync(int id);
+
+        Task<bool> IsRentedByUserIdAsync(int houseId, string userId);
+
+        Task RentAsync(int houseId, string userId);
     }
 }

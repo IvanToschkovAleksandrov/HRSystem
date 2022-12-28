@@ -108,7 +108,7 @@ namespace HRSystem.Services.Houses
 
         public async Task<IEnumerable<HouseServiceModel>> AllHousesByUserIdAsync(string userId)
         {
-            return await context.Houses
+            var houses = await context.Houses
                 .Where(h => h.RenterId == userId)
                 .Select(h => new HouseServiceModel()
                 {
@@ -120,6 +120,7 @@ namespace HRSystem.Services.Houses
                     PricePerMonth = h.PricePerMonth
                 })
                 .ToListAsync();
+            return houses;
         }
 
         public async Task<bool> CategoryExistAsync(int id)
@@ -183,6 +184,18 @@ namespace HRSystem.Services.Houses
                 .FirstAsync();
         }
 
+        public async Task<bool> IsRentedAsync(int id)
+        {
+            return await context.Houses
+                .AnyAsync(h => h.Id == id && h.RenterId != null);
+        }
+
+        public async Task<bool> IsRentedByUserIdAsync(int houseId, string userId)
+        {
+            return await context.Houses
+                .AnyAsync(h => h.Id == houseId && h.RenterId == userId);
+        }
+
         public async Task<IEnumerable<HouseIndexServiceModel>> LastThreeHousesAsync()
         {
             return await context.Houses
@@ -195,6 +208,14 @@ namespace HRSystem.Services.Houses
                     ImageUrl = h.ImageUrl
                 })
                 .ToListAsync();
+        }
+
+        public async Task RentAsync(int houseId, string userId)
+        {
+            var house = await context.Houses.FirstAsync(h => h.Id == houseId);
+            house.RenterId = userId;
+
+            await context.SaveChangesAsync();
         }
     }
 }
