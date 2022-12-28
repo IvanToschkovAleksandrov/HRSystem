@@ -31,5 +31,9 @@ namespace HRSystem.Services.Houses
             decimal price,
             int categoryId,
             int agentId);
+
+        Task<bool> ExistAsync(int id);
+
+        Task<HouseDetailsServiceModel> HouseDetailsByIdAsync(int id);
     }
 }

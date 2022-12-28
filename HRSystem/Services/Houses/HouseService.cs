@@ -1,5 +1,6 @@
 ﻿using HRSystem.Data;
 using HRSystem.Data.Models;
+using HRSystem.Services.Agents.Models;
 using HRSystem.Services.Models;
 using Microsoft.Build.Evaluation;
 using Microsoft.EntityFrameworkCore;
@@ -151,6 +152,35 @@ namespace HRSystem.Services.Houses
             await context.SaveChangesAsync();
 
             return house.Id;
+        }
+
+        public async Task<bool> ExistAsync(int id)
+        {
+            return await context.Houses
+                .AnyAsync(h => h.Id == id);
+        }
+
+        public async Task<HouseDetailsServiceModel> HouseDetailsByIdAsync(int id)
+        {
+            return await context.Houses
+                .Where(h => h.Id == id)
+                .Select(h => new HouseDetailsServiceModel()
+                {
+                    Id = h.Id,
+                    Title = h.Title,
+                    Address = h.Address,
+                    Description = h.Description,
+                    ImageUrl = h.ImageUrl,
+                    PricePerMonth = h.PricePerMonth,
+                    IsRented = h.RenterId != null,
+                    Category = h.Category.Name,
+                    Agent = new AgentServiceModel()
+                    {
+                        Email = h.Agent.User.Email,
+                        PhoneNumber = h.Agent.PhoneNumber
+                    }
+                })
+                .FirstAsync();
         }
 
         public async Task<IEnumerable<HouseIndexServiceModel>> LastThreeHousesAsync()
