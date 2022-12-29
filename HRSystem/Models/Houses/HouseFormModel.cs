@@ -30,6 +30,6 @@ namespace HRSystem.Models.Houses
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
 
-        public IEnumerable<HouseCategoryServiceModel> Cagetories { get; set; } = new List<HouseCategoryServiceModel>();
+        public IEnumerable<HouseCategoryServiceModel> Categories { get; set; } = new List<HouseCategoryServiceModel>();
     }
 }

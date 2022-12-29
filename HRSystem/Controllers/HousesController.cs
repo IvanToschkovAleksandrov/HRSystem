@@ -24,13 +24,6 @@ namespace HRSystem.Controllers
             this.agentService = agentService;
         }
 
-        //public IActionResult All()
-        //{
-        //    var model = new AllHousesQueryModel();
-
-        //    return View(model);
-        //}
-
         [HttpGet]
         public async Task<IActionResult> All([FromQuery] AllHousesQueryModel query)
         {
@@ -92,7 +85,7 @@ namespace HRSystem.Controllers
 
             var model = new HouseFormModel()
             {
-                Cagetories = await houseService.AllCategoriesAsync()
+                Categories = await houseService.AllCategoriesAsync()
             };
 
             return View(model);
@@ -114,7 +107,7 @@ namespace HRSystem.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.Cagetories = await houseService.AllCategoriesAsync();
+                model.Categories = await houseService.AllCategoriesAsync();
 
                 return View(model);
             }
@@ -135,21 +128,64 @@ namespace HRSystem.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var model = new HouseFormModel();
+            if (!await houseService.ExistAsync(id))
+            {
+                return BadRequest();
+            }
 
-            return View(model);
+            if (!await houseService.HasAgentWithIdAsync(id, User.Id()))
+            {
+                return Unauthorized();
+            }
+
+            var house = await houseService.HouseDetailsByIdAsync(id);
+            var categoryId = await houseService.GetHouseCategoryIdAsync(house.Id);
+
+            var houseModel = new HouseFormModel()
+            {
+                Title = house.Title,
+                Address = house.Address,
+                ImageUrl = house.ImageUrl,
+                Description = house.Description,
+                CategoryId = categoryId,
+                PricePerMonth = house.PricePerMonth,
+                Categories = await houseService.AllCategoriesAsync()
+            };
+
+            return View(houseModel);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult Edit(HouseFormModel model, int id)
+        public async Task<IActionResult> Edit(HouseFormModel model, int id)
         {
-            //Check ModelState
-            //Update house in the database.
+            if (!await houseService.ExistAsync(id))
+            {
+                return BadRequest();
+            }
 
-            return RedirectToAction(nameof(Details), new { id = 1 });
+            if (!await houseService.HasAgentWithIdAsync(id, User.Id()))
+            {
+                return Unauthorized();
+            }
+
+            if (!await houseService.CategoryExistAsync(model.CategoryId))
+            {
+                ModelState.AddModelError(nameof(model.CategoryId), "Category does not exist!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Categories = await houseService.AllCategoriesAsync();
+
+                return View(model);
+            }
+
+            await houseService.EditAsync(id, model.Title, model.Address, model.Description, model.ImageUrl, model.PricePerMonth, model.CategoryId);
+
+            return RedirectToAction(nameof(Details), new { id = id });
         }
 
         [Authorize]

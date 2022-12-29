@@ -2,7 +2,6 @@
 using HRSystem.Data.Models;
 using HRSystem.Services.Agents.Models;
 using HRSystem.Services.Models;
-using Microsoft.Build.Evaluation;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRSystem.Services.Houses
@@ -155,10 +154,52 @@ namespace HRSystem.Services.Houses
             return house.Id;
         }
 
+        public async Task EditAsync(int id, string title, string address, string description, string imageUrl, decimal price, int categoryId)
+        {
+            var house = await context.Houses
+                .FirstAsync(h => h.Id == id);
+            house.Title = title;
+            house.Address = address;
+            house.Description = description;
+            house.ImageUrl = imageUrl;
+            house.PricePerMonth = price;
+            house.CategoryId = categoryId;
+
+            await context.SaveChangesAsync();
+        }
+
         public async Task<bool> ExistAsync(int id)
         {
             return await context.Houses
                 .AnyAsync(h => h.Id == id);
+        }
+
+        public async Task<int> GetHouseCategoryIdAsync(int houseId)
+        {
+            var house = await context.Houses
+                .FirstAsync(h => h.Id == houseId);
+
+            return house.CategoryId;
+        }
+
+        public async Task<bool> HasAgentWithIdAsync(int houseId, string currentUserId)
+        {
+            var house = await context.Houses
+                .FindAsync(houseId);
+            var agent = await context.Agents
+                .FirstOrDefaultAsync(a => a.Id == house.AgentId);
+
+            if (agent == null)
+            {
+                return false;
+            }
+
+            if (agent.UserId != currentUserId)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<HouseDetailsServiceModel> HouseDetailsByIdAsync(int id)

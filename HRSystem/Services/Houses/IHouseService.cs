@@ -41,5 +41,18 @@ namespace HRSystem.Services.Houses
         Task<bool> IsRentedByUserIdAsync(int houseId, string userId);
 
         Task RentAsync(int houseId, string userId);
+
+        Task EditAsync(
+            int houseId,
+            string title,
+            string address,
+            string description, 
+            string imageUrl,
+            decimal price,
+            int categoryId);
+
+        Task<bool> HasAgentWithIdAsync(int houseId, string currentUserId);
+
+        Task<int> GetHouseCategoryIdAsync(int houseId);
     }
 }
