@@ -54,5 +54,7 @@ namespace HRSystem.Services.Houses
         Task<bool> HasAgentWithIdAsync(int houseId, string currentUserId);
 
         Task<int> GetHouseCategoryIdAsync(int houseId);
+
+        Task DeleteAsync(int id);
     }
 }

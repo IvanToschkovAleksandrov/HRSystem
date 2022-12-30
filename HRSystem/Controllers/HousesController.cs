@@ -190,18 +190,45 @@ namespace HRSystem.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var model = new HouseDetailsViewModel();
+            if (!await houseService.ExistAsync(id))
+            {
+                return BadRequest();
+            }
+
+            if (!await houseService.HasAgentWithIdAsync(id, User.Id()))
+            {
+                return Unauthorized();
+            }
+
+            var house = await houseService.HouseDetailsByIdAsync(id);
+            var model = new HouseDetailsViewModel()
+            {
+                Id = id,
+                Address = house.Address,
+                Title = house.Title,
+                ImageUrl = house.ImageUrl
+            };
 
             return View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult Delete(HouseDetailsViewModel model, int id)
+        public async Task<IActionResult> Delete(HouseDetailsViewModel model, int id)
         {
-            //Delete House from the Database.
+            if (!await houseService.ExistAsync(id))
+            {
+                return BadRequest();
+            }
+
+            if (!await houseService.HasAgentWithIdAsync(id, User.Id()))
+            {
+                return Unauthorized();
+            }
+
+            await houseService.DeleteAsync(id);
 
             return RedirectToAction(nameof(All));
         }

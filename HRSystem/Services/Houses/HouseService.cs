@@ -154,6 +154,13 @@ namespace HRSystem.Services.Houses
             return house.Id;
         }
 
+        public async Task DeleteAsync(int id)
+        {
+            var house = await context.Houses.FirstAsync(h => h.Id == id);
+            context.Remove(house);
+            await context.SaveChangesAsync();
+        }
+
         public async Task EditAsync(int id, string title, string address, string description, string imageUrl, decimal price, int categoryId)
         {
             var house = await context.Houses
