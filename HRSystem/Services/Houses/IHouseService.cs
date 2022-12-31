@@ -56,5 +56,7 @@ namespace HRSystem.Services.Houses
         Task<int> GetHouseCategoryIdAsync(int houseId);
 
         Task DeleteAsync(int id);
+
+        Task LeaveAsync(int houseId);
     }
 }

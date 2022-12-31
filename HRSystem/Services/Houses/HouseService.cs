@@ -258,6 +258,13 @@ namespace HRSystem.Services.Houses
                 .ToListAsync();
         }
 
+        public async Task LeaveAsync(int houseId)
+        {
+            var house = await context.Houses.FirstAsync(h => h.Id == houseId);
+            house.RenterId = null;
+            await context.SaveChangesAsync();
+        }
+
         public async Task RentAsync(int houseId, string userId)
         {
             var house = await context.Houses.FirstAsync(h => h.Id == houseId);

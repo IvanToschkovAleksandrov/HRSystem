@@ -259,8 +259,20 @@ namespace HRSystem.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult Leave(int id)
+        public async Task<IActionResult> Leave(int id)
         {
+            if (!await houseService.ExistAsync(id))
+            {
+                return BadRequest();
+            }
+
+            if (!await houseService.IsRentedByUserIdAsync(id, User.Id()))
+            {
+                return Unauthorized();
+            }
+
+            await houseService.LeaveAsync(id);
+
             return RedirectToAction(nameof(Mine));
         }
     }
